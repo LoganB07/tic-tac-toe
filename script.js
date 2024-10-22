@@ -37,6 +37,7 @@ function updatePlayers() {
     }
 }
 
+
 function createGameBoard() {
     const gametable = document.querySelector("#gametable");
     gametable.removeChild(document.querySelector(".start"));
@@ -141,10 +142,266 @@ function playRound(row, col) {
         location.reload();
     }
 
-    if (Game.currentPlayer == Game.player1) {Game.currentPlayer = Game.player2;}
+    if (Game.currentPlayer == Game.player1) {
+        Game.currentPlayer = Game.player2;
+        if (Game.player2.name == "Comp") {
+            playCompRound();
+        }
+    }
     else {Game.currentPlayer = Game.player1;}
     console.log(Game);
     
+}
+
+function playCompRound() {
+    let rchoice = -1;
+    let cchoice = -1;
+    for (let row = 0; row < 3; row++){
+        if (foundWin("row", row)){
+            for (let col = 0; col < 3; col++) {
+                if (Game.gameboard[row][col] == "") {
+                    rchoice = row;
+                    cchoice = col;
+                    break;
+                }
+            }
+        }
+        if (foundBlock("row", row)) {
+            for (let col = 0; col < 3; col++) {
+                if (Game.gameboard[row][col] == "") {
+                    rchoice = row;
+                    cchoice = col;
+                    break;
+                }
+            }
+        }
+    }
+
+    for (let col = 0; col < 3; col++){
+        if (foundWin("col", col)){
+            for (let row = 0; row < 3; row++) {
+                if (Game.gameboard[row][col] == "") {
+                    rchoice = row;
+                    cchoice = col;
+                    break;
+                }
+            }
+        }
+        if (foundBlock("col", col)) {
+            for (let row = 0; row < 3; row++) {
+                if (Game.gameboard[row][col] == "") {
+                    rchoice = row;
+                    cchoice = col;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (foundWin("D", 0)) {
+        if (Game.gameboard[0][0] == ""){
+            rchoice = 0;
+            cchoice = 0;
+        }
+        if (Game.gameboard[1][1] == ""){
+            rchoice = 1;
+            cchoice = 1;
+        }
+        if (Game.gameboard[2][2] == ""){
+            rchoice = 2;
+            cchoice = 2;
+        }
+    }
+    else if (foundBlock("D", 0)) {
+        if (Game.gameboard[0][0] == ""){
+            rchoice = 0;
+            cchoice = 0;
+        }
+        if (Game.gameboard[1][1] == ""){
+            rchoice = 1;
+            cchoice = 1;
+        }
+        if (Game.gameboard[2][2] == ""){
+            rchoice = 2;
+            cchoice = 2;
+        }
+    }
+
+    if (foundWin("D", 1)) {
+        if (Game.gameboard[0][2] == ""){
+            rchoice = 0;
+            cchoice = 2;
+        }
+        if (Game.gameboard[1][1] == ""){
+            rchoice = 1;
+            cchoice = 1;
+        }
+        if (Game.gameboard[2][0] == ""){
+            rchoice = 2;
+            cchoice = 0;
+        }
+    }
+    else if (foundBlock("D", 1)) {
+        if (Game.gameboard[0][2] == ""){
+            rchoice = 0;
+            cchoice = 2;
+        }
+        if (Game.gameboard[1][1] == ""){
+            rchoice = 1;
+            cchoice = 1;
+        }
+        if (Game.gameboard[2][0] == ""){
+            rchoice = 2;
+            cchoice = 0;
+        }
+    }
+    if (rchoice == -1 || cchoice == -1) {
+        randomChoice();
+    }
+    else {
+        switch (rchoice) {
+            case 0:
+                document.querySelector(`.a${cchoice + 1}`).textContent = "O";
+                //document.querySelector(`.a${cchoice + 1}`).removeEventListener("click", addMark);
+                break;
+            case 1:
+                document.querySelector(`.b${cchoice + 1}`).textContent = "O";
+                //document.querySelector(`.b${cchoice + 1}`).removeEventListener("click", addMark);
+                break;
+            case 2:
+                document.querySelector(`.c${cchoice + 1}`).textContent = "O";
+                //document.querySelector(`.c${cchoice + 1}`).removeEventListener("click", addMark);
+                break;
+        }
+        console.log(`comp chose ${rchoice} ${cchoice}`);
+    }
+    
+    Game.currentPlayer = Game.player1;
+
+}
+
+function foundWin(checkType, checkValue) {
+    let Xcount = 0;
+    let Ocount = 0;
+    switch (checkType) {
+        case "row":
+            for (let col = 0; col < 3; col++){
+                if (Game.gameboard[checkValue][col] == "O") {Ocount += 1;}
+                if (Game.gameboard[checkValue][col] == "X") {Xcount += 1;}
+            }
+            if (Ocount == 2 && Xcount == 0) {return true;}
+            else {return false;}
+        case "col":
+            for (let row = 0; row < 3; row++){
+                if (Game.gameboard[row][checkValue] == "O") {Ocount += 1;}
+                if (Game.gameboard[row][checkValue] == "X") {Xcount += 1;}
+            }
+            if (Ocount == 2 && Xcount == 0) {return true;}
+            else {return false;}
+        case "D":
+            switch (checkValue){
+                case 0:
+                    if (Game.gameboard[0][0] == "O") {Ocount += 1;}
+                    if (Game.gameboard[0][0] == "X") {Xcount += 1;}
+
+                    if (Game.gameboard[1][1] == "O") {Ocount += 1;}
+                    if (Game.gameboard[1][1] == "X") {Xcount += 1;}
+
+                    if (Game.gameboard[2][2] == "O") {Ocount += 1;}
+                    if (Game.gameboard[2][2] == "X") {Xcount += 1;}
+                    break;
+                case 1:
+                    if (Game.gameboard[0][2] == "O") {Ocount += 1;}
+                    if (Game.gameboard[0][2] == "X") {Xcount += 1;}
+
+                    if (Game.gameboard[1][1] == "O") {Ocount += 1;}
+                    if (Game.gameboard[1][1] == "X") {Xcount += 1;}
+
+                    if (Game.gameboard[2][0] == "O") {Ocount += 1;}
+                    if (Game.gameboard[2][0] == "X") {Xcount += 1;}
+                    break;
+            }
+            if (Ocount == 2 && Xcount == 0) {return true;}
+            else {return false;}
+    }
+}
+
+function foundBlock(checkType, checkValue) {
+    let Xcount = 0;
+    let Ocount = 0;
+    switch (checkType) {
+        case "row":
+            for (let col = 0; col < 3; col++){
+                if (Game.gameboard[checkValue][col] == "O") {Ocount += 1;}
+                if (Game.gameboard[checkValue][col] == "X") {Xcount += 1;}
+            }
+            if (Ocount == 0 && Xcount == 2) {return true;}
+            else {return false;}
+        case "col":
+            for (let row = 0; row < 3; row++){
+                if (Game.gameboard[row][checkValue] == "O") {Ocount += 1;}
+                if (Game.gameboard[row][checkValue] == "X") {Xcount += 1;}
+            }
+            if (Ocount == 0 && Xcount == 2) {return true;}
+            else {return false;}
+        case "D":
+            switch (checkValue){
+                case 0:
+                    if (Game.gameboard[0][0] == "O") {Ocount += 1;}
+                    if (Game.gameboard[0][0] == "X") {Xcount += 1;}
+
+                    if (Game.gameboard[1][1] == "O") {Ocount += 1;}
+                    if (Game.gameboard[1][1] == "X") {Xcount += 1;}
+
+                    if (Game.gameboard[2][2] == "O") {Ocount += 1;}
+                    if (Game.gameboard[2][2] == "X") {Xcount += 1;}
+                    break;
+                case 1:
+                    if (Game.gameboard[0][2] == "O") {Ocount += 1;}
+                    if (Game.gameboard[0][2] == "X") {Xcount += 1;}
+
+                    if (Game.gameboard[1][1] == "O") {Ocount += 1;}
+                    if (Game.gameboard[1][1] == "X") {Xcount += 1;}
+
+                    if (Game.gameboard[2][0] == "O") {Ocount += 1;}
+                    if (Game.gameboard[2][0] == "X") {Xcount += 1;}
+                    break;
+            }
+            if (Ocount == 0 && Xcount == 2) {return true;}
+            else {return false;}
+    }
+}
+
+function randomChoice() {
+    const MIN = 0;
+    const MAX = 2;
+
+    while (true) {
+        let row = Math.floor((Math.random() * (MAX - MIN) + MIN));
+        let col = Math.floor((Math.random() * (MAX - MIN) + MIN));
+
+        if (Game.gameboard[row][col] == "") {
+            switch (row) {
+                case 0:
+                    document.querySelector(`.a${col + 1}`).textContent = Game.currentPlayer.mark;
+                    //document.querySelector(`.a${col + 1}`).removeEventListener("click", addMark);
+                    break;
+                case 1:
+                    document.querySelector(`.b${col + 1}`).textContent = Game.currentPlayer.mark;
+                    //document.querySelector(`.b${col + 1}`).removeEventListener("click", addMark);
+                    break;
+                case 2:
+                    document.querySelector(`.c${col + 1}`).textContent = Game.currentPlayer.mark;
+                    //document.querySelector(`.c${col + 1}`).removeEventListener("click", addMark);
+                    break;
+            }
+            console.log(`comp chose ${row} ${col}`);
+        break;
+        }
+    }
+
+
+
 }
 
 let startBtn = document.querySelector(".start");
