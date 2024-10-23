@@ -151,11 +151,11 @@ function playRound(row, col) {
     }
     else {Game.currentPlayer = Game.player1;}
     console.log(Game);
-    Game.squaresFilled += 1;
-    if (Game.squaresFilled == 9) {
-        alert("Well looks like it's a tie!")
-        location.reload();
-    }
+    //Game.squaresFilled += 1;
+    //if (Game.squaresFilled == 9) {
+        //alert("Well looks like it's a tie!")
+        //location.reload();
+    //}
     
 }
 
