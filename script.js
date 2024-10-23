@@ -4,8 +4,9 @@ const Game = (function() {
     let player2;
     let gameboard = [["","",""],["","",""],["","",""]];
     let currentPlayer;
+    let squaresFilled = 0;
 
-    return {isTwoPlayer, player1, player2, gameboard, currentPlayer};
+    return {isTwoPlayer, player1, player2, gameboard, currentPlayer, squaresFilled};
 })();
 
 function createPlayer(name, mark) {
@@ -150,6 +151,11 @@ function playRound(row, col) {
     }
     else {Game.currentPlayer = Game.player1;}
     console.log(Game);
+    Game.squaresFilled += 1;
+    if (Game.squaresFilled == 9) {
+        alert("Well looks like it's a tie!")
+        location.reload();
+    }
     
 }
 
