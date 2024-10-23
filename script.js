@@ -51,6 +51,9 @@ function createGameBoard() {
         box.classList.add(`a${i}`);
         box.addEventListener("click", function addMark() {
             playRound(1, i);
+            Game.currentPlayer = Game.player2;
+            if (Game.currentPlayer.name = "Comp" && Game.squaresFilled < 9) {playCompRound();}
+            console.log(Game.gameboard);
             this.removeEventListener("click", addMark)
         });
         gameboard.appendChild(box);
@@ -60,6 +63,9 @@ function createGameBoard() {
         box.classList.add(`b${i}`);
         box.addEventListener("click", function addMark() {
             playRound(2, i);
+            Game.currentPlayer = Game.player2;
+            if (Game.currentPlayer.name = "Comp" && Game.squaresFilled < 9) {playCompRound();}
+            console.log(Game.gameboard);
             this.removeEventListener("click", addMark)
         });
         gameboard.appendChild(box);
@@ -69,6 +75,10 @@ function createGameBoard() {
         box.classList.add(`c${i}`);
         box.addEventListener("click", function addMark(){
             playRound(3, i);
+            Game.currentPlayer = Game.player2;
+            if (Game.currentPlayer.name = "Comp" && Game.squaresFilled < 9) {playCompRound();}
+            console.log(Game.gameboard);
+            
             this.removeEventListener("click", addMark)
         });
         gameboard.appendChild(box);
@@ -143,147 +153,195 @@ function playRound(row, col) {
         location.reload();
     }
 
-    if (Game.currentPlayer == Game.player1) {
-        Game.currentPlayer = Game.player2;
-        if (Game.player2.name == "Comp") {
-            playCompRound();
-        }
+    
+    Game.squaresFilled += 1;
+    console.log(`${Game.squaresFilled} squares filled`)
+    if (Game.squaresFilled == 9) {
+        alert("Well looks like it's a tie!")
+        location.reload();
     }
-    else {Game.currentPlayer = Game.player1;}
-    console.log(Game);
-    //Game.squaresFilled += 1;
-    //if (Game.squaresFilled == 9) {
-        //alert("Well looks like it's a tie!")
-        //location.reload();
-    //}
     
 }
 
 function playCompRound() {
     let rchoice = -1;
     let cchoice = -1;
-    for (let row = 0; row < 3; row++){
-        if (foundWin("row", row)){
-            for (let col = 0; col < 3; col++) {
-                if (Game.gameboard[row][col] == "") {
-                    rchoice = row;
-                    cchoice = col;
-                    break;
+    let winFound = false;
+    let blockFound = false;
+    if (Game.squaresFilled >= 3) {
+        console.log("Checking if win is possible...")
+        for (let row = 0; row < 3; row++){
+            if (foundWin("row", row)){
+                console.log("win found")
+                for (let col = 0; col < 3; col++) {
+                    if (Game.gameboard[row][col] == "") {
+                        rchoice = row;
+                        cchoice = col;
+                        winFound = true;
+                        break;
+                    }
                 }
             }
         }
-        if (foundBlock("row", row)) {
-            for (let col = 0; col < 3; col++) {
-                if (Game.gameboard[row][col] == "") {
-                    rchoice = row;
-                    cchoice = col;
-                    break;
+
+        if (!winFound) {
+        for (let col = 0; col < 3; col++){
+            if (foundWin("col", col)){
+                console.log("win found")
+                for (let row = 0; row < 3; row++) {
+                    if (Game.gameboard[row][col] == "") {
+                        rchoice = row;
+                        cchoice = col;
+                        winFound = true;
+                        break;
+                    }
                 }
             }
         }
     }
 
-    for (let col = 0; col < 3; col++){
-        if (foundWin("col", col)){
-            for (let row = 0; row < 3; row++) {
-                if (Game.gameboard[row][col] == "") {
-                    rchoice = row;
-                    cchoice = col;
-                    break;
-                }
+        if (!winFound) {
+        if (foundWin("D", 0)) {
+            console.log("win found")
+            winFound = true;
+            if (Game.gameboard[0][0] == ""){
+                rchoice = 0;
+                cchoice = 0;
+            }
+            if (Game.gameboard[1][1] == ""){
+                rchoice = 1;
+                cchoice = 1;
+            }
+            if (Game.gameboard[2][2] == ""){
+                rchoice = 2;
+                cchoice = 2;
             }
         }
-        if (foundBlock("col", col)) {
-            for (let row = 0; row < 3; row++) {
-                if (Game.gameboard[row][col] == "") {
-                    rchoice = row;
-                    cchoice = col;
-                    break;
-                }
+    }
+    
+        if (!winFound) {
+            if (foundWin("D", 1)) {
+            console.log("win found")
+            winFound = true;
+            if (Game.gameboard[0][2] == ""){
+                rchoice = 0;
+                cchoice = 2;
+            }
+            if (Game.gameboard[1][1] == ""){
+                rchoice = 1;
+                cchoice = 1;
+            }
+            if (Game.gameboard[2][0] == ""){
+                rchoice = 2;
+                cchoice = 0;
             }
         }
     }
 
-    if (foundWin("D", 0)) {
-        if (Game.gameboard[0][0] == ""){
-            rchoice = 0;
-            cchoice = 0;
+    if (!winFound) {
+        console.log("No wins found. Checking blocks...");
+        for (let row = 0; row < 3; row++){
+            if (foundBlock("row", row)){
+                console.log("block found")
+                for (let col = 0; col < 3; col++) {
+                    if (Game.gameboard[row][col] == "") {
+                        rchoice = row;
+                        cchoice = col;
+                        blockFound = true;
+                        break;
+                    }
+                }
+            }
         }
-        if (Game.gameboard[1][1] == ""){
-            rchoice = 1;
-            cchoice = 1;
+        if (!blockFound) {
+            for (let col = 0; col < 3; col++){
+                if (foundBlock("col", col)){
+                    console.log("block found")
+                    for (let row = 0; row < 3; row++) {
+                        if (Game.gameboard[row][col] == "") {
+                            rchoice = row;
+                            cchoice = col;
+                            blockFound = true;
+                            break;
+                        }
+                    }
+                }
+            }
         }
-        if (Game.gameboard[2][2] == ""){
-            rchoice = 2;
-            cchoice = 2;
-        }
-    }
-    else if (foundBlock("D", 0)) {
-        if (Game.gameboard[0][0] == ""){
-            rchoice = 0;
-            cchoice = 0;
-        }
-        if (Game.gameboard[1][1] == ""){
-            rchoice = 1;
-            cchoice = 1;
-        }
-        if (Game.gameboard[2][2] == ""){
-            rchoice = 2;
-            cchoice = 2;
-        }
-    }
 
-    if (foundWin("D", 1)) {
-        if (Game.gameboard[0][2] == ""){
-            rchoice = 0;
-            cchoice = 2;
+        if (!blockFound) {
+            if (foundBlock("D", 0)) {
+                console.log("block found")
+                blockFound = true;
+                if (Game.gameboard[0][0] == ""){
+                    rchoice = 0;
+                    cchoice = 0;
+                }
+                if (Game.gameboard[1][1] == ""){
+                    rchoice = 1;
+                    cchoice = 1;
+                }
+                if (Game.gameboard[2][2] == ""){
+                    rchoice = 2;
+                    cchoice = 2;
+                }
+            }
         }
-        if (Game.gameboard[1][1] == ""){
-            rchoice = 1;
-            cchoice = 1;
+        
+            if (!blockFound) {
+                if (foundBlock("D", 1)) {
+                console.log("block found")
+                blockFound = true;
+                if (Game.gameboard[0][2] == ""){
+                    rchoice = 0;
+                    cchoice = 2;
+                }
+                if (Game.gameboard[1][1] == ""){
+                    rchoice = 1;
+                    cchoice = 1;
+                }
+                if (Game.gameboard[2][0] == ""){
+                    rchoice = 2;
+                    cchoice = 0;
+                }
+            }
         }
-        if (Game.gameboard[2][0] == ""){
-            rchoice = 2;
-            cchoice = 0;
-        }
+
     }
-    else if (foundBlock("D", 1)) {
-        if (Game.gameboard[0][2] == ""){
-            rchoice = 0;
-            cchoice = 2;
-        }
-        if (Game.gameboard[1][1] == ""){
-            rchoice = 1;
-            cchoice = 1;
-        }
-        if (Game.gameboard[2][0] == ""){
-            rchoice = 2;
-            cchoice = 0;
-        }
     }
     if (rchoice == -1 || cchoice == -1) {
+        console.log("none found")
         randomChoice();
     }
     else {
         switch (rchoice) {
             case 0:
-                document.querySelector(`.a${cchoice + 1}`).textContent = "O";
-                //document.querySelector(`.a${cchoice + 1}`).removeEventListener("click", addMark);
+                document.querySelector(`.a${cchoice + 1}`).textContent = Game.currentPlayer.mark;
+                Game.gameboard[0][cchoice] = Game.currentPlayer.mark;
                 break;
             case 1:
-                document.querySelector(`.b${cchoice + 1}`).textContent = "O";
-                //document.querySelector(`.b${cchoice + 1}`).removeEventListener("click", addMark);
+                document.querySelector(`.b${cchoice + 1}`).textContent = Game.currentPlayer.mark;
+                Game.gameboard[1][cchoice] = Game.currentPlayer.mark;
                 break;
             case 2:
-                document.querySelector(`.c${cchoice + 1}`).textContent = "O";
-                //document.querySelector(`.c${cchoice + 1}`).removeEventListener("click", addMark);
+                document.querySelector(`.c${cchoice + 1}`).textContent = Game.currentPlayer.mark;
+                Game.gameboard[2][cchoice] = Game.currentPlayer.mark;
                 break;
         }
         console.log(`comp chose ${rchoice} ${cchoice}`);
     }
+    Game.squaresFilled += 1;
+    console.log(`${Game.squaresFilled} squares filled`)
+    if (checkForWin()) {
+        alert(`The winner is ${Game.currentPlayer.name}!`);
+        location.reload();
+    }
     
+    else if (Game.squaresFilled == 9) {
+        alert("Well looks like it's a tie!")
+        location.reload();
+    }
     Game.currentPlayer = Game.player1;
-
 }
 
 function foundWin(checkType, checkValue) {
@@ -292,39 +350,39 @@ function foundWin(checkType, checkValue) {
     switch (checkType) {
         case "row":
             for (let col = 0; col < 3; col++){
-                if (Game.gameboard[checkValue][col] == "O") {Ocount += 1;}
-                if (Game.gameboard[checkValue][col] == "X") {Xcount += 1;}
+                if (Game.gameboard[checkValue][col] == Game.currentPlayer.mark) {Ocount += 1;}
+                if (Game.gameboard[checkValue][col] == Game.player1.mark) {Xcount += 1;}
             }
             if (Ocount == 2 && Xcount == 0) {return true;}
             else {return false;}
         case "col":
             for (let row = 0; row < 3; row++){
-                if (Game.gameboard[row][checkValue] == "O") {Ocount += 1;}
-                if (Game.gameboard[row][checkValue] == "X") {Xcount += 1;}
+                if (Game.gameboard[row][checkValue] == Game.currentPlayer.mark) {Ocount += 1;}
+                if (Game.gameboard[row][checkValue] == Game.player1.mark) {Xcount += 1;}
             }
             if (Ocount == 2 && Xcount == 0) {return true;}
             else {return false;}
         case "D":
             switch (checkValue){
                 case 0:
-                    if (Game.gameboard[0][0] == "O") {Ocount += 1;}
-                    if (Game.gameboard[0][0] == "X") {Xcount += 1;}
+                    if (Game.gameboard[0][0] == Game.currentPlayer.mark) {Ocount += 1;}
+                    if (Game.gameboard[0][0] == Game.player1.mark) {Xcount += 1;}
 
-                    if (Game.gameboard[1][1] == "O") {Ocount += 1;}
-                    if (Game.gameboard[1][1] == "X") {Xcount += 1;}
+                    if (Game.gameboard[1][1] == Game.currentPlayer.mark) {Ocount += 1;}
+                    if (Game.gameboard[1][1] == Game.player1.mark) {Xcount += 1;}
 
-                    if (Game.gameboard[2][2] == "O") {Ocount += 1;}
-                    if (Game.gameboard[2][2] == "X") {Xcount += 1;}
+                    if (Game.gameboard[2][2] == Game.currentPlayer.mark) {Ocount += 1;}
+                    if (Game.gameboard[2][2] == Game.player1.mark) {Xcount += 1;}
                     break;
                 case 1:
-                    if (Game.gameboard[0][2] == "O") {Ocount += 1;}
-                    if (Game.gameboard[0][2] == "X") {Xcount += 1;}
+                    if (Game.gameboard[0][2] == Game.currentPlayer.mark) {Ocount += 1;}
+                    if (Game.gameboard[0][2] == Game.player1.mark) {Xcount += 1;}
 
-                    if (Game.gameboard[1][1] == "O") {Ocount += 1;}
-                    if (Game.gameboard[1][1] == "X") {Xcount += 1;}
+                    if (Game.gameboard[1][1] == Game.currentPlayer.mark) {Ocount += 1;}
+                    if (Game.gameboard[1][1] == Game.player1.mark) {Xcount += 1;}
 
-                    if (Game.gameboard[2][0] == "O") {Ocount += 1;}
-                    if (Game.gameboard[2][0] == "X") {Xcount += 1;}
+                    if (Game.gameboard[2][0] == Game.currentPlayer.mark) {Ocount += 1;}
+                    if (Game.gameboard[2][0] == Game.player1.mark) {Xcount += 1;}
                     break;
             }
             if (Ocount == 2 && Xcount == 0) {return true;}
@@ -333,6 +391,7 @@ function foundWin(checkType, checkValue) {
 }
 
 function foundBlock(checkType, checkValue) {
+    console.log(`Checking for block`);
     let Xcount = 0;
     let Ocount = 0;
     switch (checkType) {
@@ -390,20 +449,21 @@ function randomChoice() {
             switch (row) {
                 case 0:
                     document.querySelector(`.a${col + 1}`).textContent = Game.currentPlayer.mark;
-                    //document.querySelector(`.a${col + 1}`).removeEventListener("click", addMark);
+                    Game.gameboard[0][col] = Game.currentPlayer.mark;
                     break;
                 case 1:
                     document.querySelector(`.b${col + 1}`).textContent = Game.currentPlayer.mark;
-                    //document.querySelector(`.b${col + 1}`).removeEventListener("click", addMark);
+                    Game.gameboard[1][col] = Game.currentPlayer.mark;
                     break;
                 case 2:
                     document.querySelector(`.c${col + 1}`).textContent = Game.currentPlayer.mark;
-                    //document.querySelector(`.c${col + 1}`).removeEventListener("click", addMark);
+                    Game.gameboard[2][col] = Game.currentPlayer.mark;
                     break;
             }
             console.log(`comp chose ${row} ${col}`);
         break;
         }
+        console.log("Oop full here")
     }
 
 
