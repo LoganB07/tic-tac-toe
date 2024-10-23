@@ -440,8 +440,8 @@ function foundBlock(checkType, checkValue) {
 function randomChoice() {
     const MIN = 0;
     const MAX = 2;
-    
-   if (Game.squaresFilled < 9) {
+    console.log(Game.squaresFilled)
+   if (Game.squaresFilled != 9) {
     while (true) {
         let row = Math.floor((Math.random() * (MAX - MIN) + MIN));
         let col = Math.floor((Math.random() * (MAX - MIN) + MIN));
