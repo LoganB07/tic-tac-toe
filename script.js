@@ -52,7 +52,7 @@ function createGameBoard() {
         box.addEventListener("click", function addMark() {
             playRound(1, i);
             Game.currentPlayer = Game.player2;
-            if (Game.currentPlayer.name = "Comp") {playCompRound();}
+            if (Game.currentPlayer.name == "Comp" && Game.squaresFilled != 9) {playCompRound();}
             console.log(Game.gameboard);
             this.removeEventListener("click", addMark)
         });
@@ -64,7 +64,7 @@ function createGameBoard() {
         box.addEventListener("click", function addMark() {
             playRound(2, i);
             Game.currentPlayer = Game.player2;
-            if (Game.currentPlayer.name = "Comp") {playCompRound();}
+            if (Game.currentPlayer.name == "Comp" && Game.squaresFilled != 9) {playCompRound();}
             console.log(Game.gameboard);
             this.removeEventListener("click", addMark)
         });
@@ -76,7 +76,7 @@ function createGameBoard() {
         box.addEventListener("click", function addMark(){
             playRound(3, i);
             Game.currentPlayer = Game.player2;
-            if (Game.currentPlayer.name = "Comp") {playCompRound();}
+            if (Game.currentPlayer.name == "Comp" && Game.squaresFilled != 9) {playCompRound();}
             console.log(Game.gameboard);
             
             this.removeEventListener("click", addMark)
